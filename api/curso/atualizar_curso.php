@@ -6,19 +6,22 @@ header('Access-Control-Allow-Methods: PUT');
 header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization, X-Requested-With');
 
 require_once '../../config/database.php';
-require_once '../../models/agendamento.php';
+require_once '../../models/SistemaEscolar.php';
 
 $database = new Database();
 $db = $database->connect();
 
-$agendamento = new Agendamento($db);
+$artista = new SistemaEscolar($db);
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-if (!empty($data['id']) &&
-    !empty($data['status'])) {
-    $agendamento->id = $data['id'];
-    $agendamento->status = $data['status'];
+if (!is_null($data['item']['id'])
+    && !is_null($data['item']['nome'])
+    && !is_null($data['item']['descricao'])){
+
+    $artista->id = $data['item']['id'];
+    $artista->nome = $data['item']['nome'];
+    $artista->descricao = $data['item']['descricao'];
 } else {
     // set response code - 400 bad request
     http_response_code(400);
@@ -28,24 +31,12 @@ if (!empty($data['id']) &&
     return;
 }
 
-switch ($agendamento->status) {
-    case "Aguardando":
-        $agendamento->status = "Em andamento";
-        break;
-    case "Em andamento":
-        $agendamento->status = "Finalizado";
-        break;
-    default:
-        $agendamento->status = "Aguardando";
-        break;
-}
-
-if ($agendamento->atualizar_status()) {
+if ($artista->atualizarCurso()) {
     // set response code - 201 created
     http_response_code(201);
 
     // Atualizado com sucesso
-    echo $agendamento->status;
+    echo 1;
 } else {
     // set response code - 503 service unavailable
     http_response_code(503);

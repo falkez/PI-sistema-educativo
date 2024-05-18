@@ -1,7 +1,7 @@
 import store from '../store.js'
 
 export default {
-    name: 'Two',
+    name: 'Professores',
     
     props: {
         message: String,
@@ -16,7 +16,6 @@ export default {
 
         return {store};
     },
-   
 
     template: `
         <h1>Component Two</h1>

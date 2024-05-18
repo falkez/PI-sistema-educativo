@@ -6,19 +6,24 @@ header('Access-Control-Allow-Methods: PUT');
 header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization, X-Requested-With');
 
 require_once '../../config/database.php';
-require_once '../../models/agendamento.php';
+require_once '../../models/SistemaEscolar.php';
 
 $database = new Database();
 $db = $database->connect();
 
-$agendamento = new Agendamento($db);
+$artista = new SistemaEscolar($db);
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-if (!empty($data['id']) &&
-    !empty($data['texto'])) {
-    $agendamento->id = $data['id'];
-    $agendamento->texto = $data['texto'];
+if (!is_null($data['item']['id'])
+    && !is_null($data['item']['nome'])
+    && !is_null($data['item']['username'])
+    && !is_null($data['item']['senha'])){
+
+    $artista->id = $data['item']['id'];
+    $artista->nome = $data['item']['nome'];
+    $artista->username = $data['item']['username'];
+    $artista->senha = $data['item']['senha'];
 } else {
     // set response code - 400 bad request
     http_response_code(400);
@@ -28,7 +33,7 @@ if (!empty($data['id']) &&
     return;
 }
 
-if ($agendamento->atualizar_agendamento()) {
+if ($artista->atualizarProfessor()) {
     // set response code - 201 created
     http_response_code(201);
 

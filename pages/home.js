@@ -4,232 +4,74 @@ export default {
     name: 'Home',
 
     setup() {
-        const status = {
-            andamento: "Em andamento",
-            aguardando: "Aguardando",
-            finalizado: "Finalizado"
-        }
+        let user, senha;
 
-        let modalAgendamento;
-
-        return {store, status, modalAgendamento}
+        return {store}
     },
     data() {
         return {
-            agendamentoDescricao: '',
-            modalTitle: ''
+            user: '',
+            senha: '',
         }
     },
     methods: {
-        lerAgendamentos: function () {
-            axios.post('api/agendamento/ler_agendamentos.php')
-                .then(function (response) {
-                    store.isAgendamentosFirstLoad = false;
-                    store.agendamentos = response.data;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-        },
-        atualizarStatus: function (item) {
-            axios.put('api/agendamento/atualizar_status.php', {
-                id: item.id,
-                status: item.status
+        login: function () {
+            axios.post('api/util/login.php' , {
+                user: this.user,
+                senha: this.senha
             })
                 .then(function (response) {
-                    if (response.data !== 0) {
-                        item.status = response.data;
-                    }
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-        },
-        abrirModal: function (item, action) {
-            if (item) {
-                store.agendamentoAtual = item;
-            }
-            store.action = action;
+                    store.$currentUserId = response.data[0].id;
 
-            switch (action) {
-                case 'create':
-                    this.modalTitle = "Adicionar agendamento"
-                    break;
-                case 'edit':
-                    this.modalTitle = "Editar agendamento"
-                    break;
-            }
+                    let page = ''
 
-            this.modalAgendamento.show();
-        },
-        criarAgendamento: function () {
-            let textoInput= this.agendamentoDescricao;
-            let vue = this;
-
-            axios.post('api/agendamento/criar_agendamento.php', {
-                texto: textoInput
-            })
-                .then(function (response) {
-                    if (response.data !== 0) {
-                        vue.lerAgendamentos();
-
-                        vue.modalAgendamento.hide();
-                    }
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-        },
-        atualizarAgendamento: function () {
-            let item = store.agendamentoAtual;
-            let textoInput= this.agendamentoDescricao;
-            let vue = this;
-
-            axios.put('api/agendamento/atualizar_agendamento.php', {
-                id: item.id,
-                texto: textoInput
-            })
-                .then(function (response) {
-                    if (response.data === 1) {
-                        for (let x of store.agendamentos) {
-                            if (x.id === item.id) {
-                                x.texto = textoInput;
+                    if (store.$currentUserId === -1) {
+                        alert('Login inválido')
+                    } else {
+                        switch (response.data[0].accessId) {
+                            case 1:
+                                page = 'adminCursos'
                                 break;
-                            }
+                            case 2:
+                                page = 'professorCursos'
+                                break;
+                            case 3:
+                                page = 'alunoCursos'
+                                break;
                         }
 
-                        vue.modalAgendamento.hide();
+                        store.$currentUserAccess = response.data[0].accessId;
+                        window.location.href = window.location.href + page;
+                        document.getElementById('sidebar').style.display = 'block';
                     }
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
-        },
-        apagarAgendamento: function (id) {
-            axios.delete('api/agendamento/deletar.php', {
-                data: {
-                    id: id
-                }
-            })
-                .then(function (response) {
-                    if (response.data !== 0) {
-                        for (let x of store.agendamentos) {
-                            if (x.id === id) {
-                                store.agendamentos = store.agendamentos.filter(x => {
-                                   return x.id !== id;
-                                });
-                                break;
-                            }
-                        }
-                    }
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-        },
-        agendamentoHandler: function () {
-            switch (store.action) {
-                case 'create':
-                    this.criarAgendamento();
-                    break;
-                case 'edit':
-                    this.atualizarAgendamento();
-                    break;
-                default:
-                    break;
-            }
         }
     },
     created() {
-        if (store.isAgendamentosFirstLoad) {
-            this.lerAgendamentos();
-        }
+        document.getElementById('sidebar').style.display = 'none';
     },
     mounted() {
-        this.modalAgendamento = new bootstrap.Modal(document.getElementById("agendamento-modal"))
+
     },
 
     template: `
-      <main role="main" class="container extra-bottom">
-      <h1 class="mt-5">Agenda</h1>
+      <main>
+        <div class="modal-body" style="margin: 0 auto; width: 300px">
+          <div style="margin: 0 auto">
+            <label for="uname"><b>Usuário</b></label>
+            <input type="text" placeholder="Usuário" name="uname" style="width: 100%"  v-model="user" required>
 
-      <div class="container">
-
-        <!-- Button trigger modal -->
-        <div style="text-align: right;">
-          <button type="button" class="btn btn-outline-info btn-sm" @click="abrirModal(null, 'create')">Adicionar
-            agendamento
-          </button>
-        </div>
-
-        <div class="modal fade" id="agendamento-modal" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="Label">{{ modalTitle }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-
-              <div class="modal-body">
-                <div class="input-group mb-3">
-                  <span class="input-group-text" id="agendamento-form-display">Agendamento</span>
-                  <input type="text" class="form-control" placeholder="Descrição"
-                         v-model="agendamentoDescricao">
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                <button id="submit-task" type="button" class="btn btn-primary" @click="agendamentoHandler()">Salvar
-                </button>
-              </div>
-            </div>
+            <label for="psw"><b>Senha</b></label>
+            <input type="password" placeholder="Senha" name="psw" style="width: 100%" v-model="senha" required>
+            
+            <button id="login-btn" type="button" class="btn btn-primary"
+                    @click="login()" style="width: 100%">Login
+            </button>
           </div>
         </div>
-      </div>
-
-      <!-- Tabela agendamentos -->
-      <div class="container table-responsive">
-        <table class="table">
-          <thead>
-          <tr>
-            <th class="task-id">#</th>
-            <th class="task">Cliente</th>
-            <th class="task">Funcionário</th>
-            <th class="task">Descrição</th>
-            <th class="status">Status</th>
-            <th class="update">Editar</th>
-            <th class="update">Remover</th>
-          </tr>
-          </thead>
-
-          <tbody>
-          <tr v-for="item in store.agendamentos">
-            <td>{{ item.id }}</td>
-            <td>{{ item.cliente }}</td>
-            <td>{{ item.funcionario }}</td>
-            <td>{{ item.texto }}</td>
-            <td>
-              <button type="button" class="btn btn-sm state" @click="atualizarStatus(item)"
-                      :class="{'btn-outline-warning': item.status == status.andamento,
-                         'btn-outline-secondary': item.status == status.aguardando,
-                         'btn-outline-success': item.status == status.finalizado}">
-                {{ item.status }}
-              </button>
-            </td>
-            <td>
-              <button type="button" class="btn btn-outline-info btn-sm" @click="abrirModal(item, 'edit')">
-                <i class="fa fa-pen fa-1"></i>
-              </button>
-            </td>
-            <td>
-              <button type="button" class="btn btn-outline-secondary btn-sm remove"
-                      @click="apagarAgendamento(item.id)"><i class="fa fa-trash fa-1"></i>
-              </button>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
       </main>
     `,
 };

@@ -10,6 +10,139 @@ html {
 body {
     /* Margin bottom by footer height */
     margin-bottom: 2em;
+    min-width: 80vw;
+}
+
+.input-group-text {
+    background-color: inherit;
+    border: none;
+    font-weight: bold;
+}
+
+.row-container {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-gap: 10px;
+}
+
+.row-container-endereco {
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
+    grid-column-gap: 10px;
+    padding-right: 20px;
+}
+
+.modal-dialog {
+    max-width: 1300px;
+}
+
+.modal-body {
+    height: calc(70vh);
+    overflow-x: auto;
+}
+
+
+.modal-dialog-confirm, .modal-confirm {
+    width: auto;
+    max-width: 400px;
+    height: auto;
+}
+
+@media only screen and (max-width: 1400px) {
+    #artista-modal {
+        padding: 1em;
+    }
+}
+
+@media only screen and (max-width: 1200px) {
+    body {
+        min-width: 100vw;
+    }
+
+    .table-responsive {
+        overflow: unset;
+    }
+}
+
+@media only screen and (max-width: 1050px) {
+    body {
+        padding: 0;
+    }
+
+    .hideable-responsive {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    #zoomRange {
+        display: none;
+    }
+}
+
+#btn-light-toggle {
+    margin: auto;
+    margin-right: 1rem;
+}
+
+#btn-zoom-minus,
+#btn-zoom-plus {
+    padding: 0;
+    border: none;
+    background: inherit;
+}
+
+#btn-dark-toggle {
+    margin-right: 1rem !important;
+}
+
+.custom-range {
+    width: auto;
+    margin: 0;
+    margin-right: 6px;
+    padding: 0;
+}
+
+.col-numero {
+    width: 10%;
+}
+
+.col-nome {
+    width: 15%;
+}
+
+.col-apelido {
+    width: 15%;
+}
+
+.col-instrumento {
+    width: 10%;
+}
+
+.col-categoria {
+    width: 10%;
+}
+
+.col-congregacao {
+    width: 10%;
+}
+
+.col-examinador {
+    width: 15%;
+}
+
+.col-situacao {
+    width: 10%;
+}
+
+.btn-container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    text-align: end;
+}
+
+.input-group {
+    display: inline;
 }
 
 .footer {
@@ -28,20 +161,28 @@ hr {
     margin: auto;
 }
 
+.table thead th {
+    /*text-align: center;*/
+}
+
 .table td {
-    text-align: center;
+    /*text-align: center;*/
     vertical-align: middle;
 }
 
 .table tr {
-    text-align: center;
+    /*text-align: center;*/
     vertical-align: middle;
+}
+
+.table td, .table th {
+    padding: .50rem;
 }
 
 /* bootstrap modifications */
 .container {
     width: auto;
-    max-width: 1360px;
+    max-width: 100%;
     padding: 0 15px;
 }
 
@@ -63,4 +204,24 @@ hr {
 
 .update {
     width: 10%;
+}
+
+.form-inline * {
+    margin: 0;
+}
+
+.custom-select {
+    width: auto;
+}
+
+#mensagem-textarea {
+    height: auto;
+}
+
+textarea.form-control {
+    height: 100%;
+}
+
+#responder-container {
+    height: 80vh;
 }

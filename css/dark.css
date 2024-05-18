@@ -1,0 +1,44 @@
+body {
+    background: black;
+}
+
+#main-nav {
+    background: #0f0f0f !important;
+}
+
+#btn-zoom-minus,
+#btn-zoom-plus {
+    color: white;
+}
+
+.form-control,
+select.custom-select,
+.modal-content {
+    background: black;
+    color:white;
+}
+
+.form-control::placeholder {
+    color: white;
+}
+
+.form-control:focus {
+    background: black;
+    color: white;
+}
+
+.input-group-text {
+    color: white;
+}
+
+.container > * {
+    color: white;
+}
+
+h1, h5 {
+    color: white;
+}
+
+tbody tr:nth-child(2n) {
+    background-color: #0f0f0f;
+}

@@ -1,21 +1,22 @@
 export default Vue.reactive({
     /* variables starting with $ are automatically saved in localstorage */
 
-    
-    //component1
-    $counter: 0,
+    $currentUserAccess: -1,
+    $currentUserId: -1,
 
-    isAgendamentosFirstLoad: true,
-    agendamentos: null,
-    agendamentoAtual: null,
-    actionAgendamento: '',
+    isCursosFirstLoad: true,
+    cursos: null,
+    cursoAtual: null,
+    actionCurso: '',
 
-    //component2
-    message: null,
+    isProfessoresFirstLoad: true,
+    professores: null,
+    professorAtual: null,
+    actionProfessor: '',
 
-    //component3
-    searchString: '',
-    sortedColumn: null,
-    sortedOrder: null,
-    
+    isAlunosFirstLoad: true,
+    alunos: null,
+    alunoAtual: null,
+    actionAluno: '',
+    cursosAluno: '',
 })

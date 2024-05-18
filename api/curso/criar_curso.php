@@ -2,21 +2,24 @@
 
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Methods: DELETE');
+header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization, X-Requested-With');
 
 require_once '../../config/database.php';
-require_once '../../models/agendamento.php';
+require_once '../../models/SistemaEscolar.php';
 
 $database = new Database();
 $db = $database->connect();
 
-$agendamento = new Agendamento($db);
+$artista = new SistemaEscolar($db);
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-if (!empty($data['id'])) {
-    $agendamento->id = $data['id'];
+if (!empty($data['nome'])
+    && !empty($data['descricao'])){
+
+    $artista->nome = $data['nome'];
+    $artista->descricao = $data['descricao'];
 } else {
     // set response code - 400 bad request
     http_response_code(400);
@@ -26,14 +29,16 @@ if (!empty($data['id'])) {
     return;
 }
 
-if ($agendamento->deletar()) {
-    // set response code - 200 ok
-    http_response_code(200);
+if ($artista->criarCurso()) {
+    // set response code - 201 created
+    http_response_code(201);
 
+    // Criado com sucesso
     echo 1;
 } else {
     // set response code - 503 service unavailable
     http_response_code(503);
 
+    // Não foi possível criar
     echo 0;
 }
